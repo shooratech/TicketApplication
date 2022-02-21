@@ -1,0 +1,345 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Wizard-v2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="/css/muli-font.css">
+    <link rel="stylesheet" type="text/css" href="/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <meta name="robots" content="noindex, follow">
+    <style>
+        .vertical-center {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
+        th {
+            border: 1px solid;
+        }
+        td {
+            border: 1px solid;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-content" style="background-image: url('/images/wizard-v2-bg.jpg')">
+        <div class="wizard-v2-content">
+            <div class="wizard-form">
+                <div style="float:right; text-align:right; top:10px;right:20px;position:absolute;" id="trackTicketDiv">
+                    <a href="javascript:void(0);" id="tt">Track Ticket</a>
+                </div>
+                <div class="wizard-header" style="text-align:center;">
+                    <img src="https://app.waysaheadglobal.com/images/wslogo.png" alt="WaysAheadGlobal" class="img-responsive center-block d-block mx-auto" />
+                    <h4>Ticket Tracker</h4>
+                </div>
+                <form class="form-register" action="#" method="post">
+                    @RenderBody()
+                </form>
+                <div style="text-align: center; font-size: 14px; color: darkgray">
+                    <br> <br> <br>
+                    Powered By<br>
+                    <img id="imgwaysahead" src="https://app.waysaheadglobal.com/images/wslogo.png" alt="WaysAheadGlobal" style="height:16px;">
+                    <br>
+                    © Copyright <a href="https://waysaheadglobal.com" target="_blank" style="color: darkgray">WaysAheadGlobal</a>. All Rights Reserved
+                </div>
+            </div>
+        </div>
+    </div>
+    <script data-cfasync="false" src="../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/jquery.steps.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v652eace1692a40cfa3763df669d7439c1639079717194" integrity="sha512-Gi7xpJR8tSkrpF7aordPZQlW2DLtzUlZcumS8dMQjwDHEnw9I7ZLyiOj/6tZStRBGtGgN6ceN6cMH8z7etPGlw==" data-cf-beacon='{"rayId":"6df8cd95ce298e8c","token":"cd0b4b3a733644fc843ef0b185f98241","version":"2021.12.0","si":100}' crossorigin="anonymous"></script>
+    @*<script src="~/Scripts/jquery-1.11.3.min.js">
+        </script>*@
+
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <link href="~/bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/bootstrap-3.3.6-dist/js/bootstrap.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="~/Content/sweetalert/sweet-alert.css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(function () {
+                $('#btnSubmit').click(function (event) {
+                    event.preventDefault();
+                    if (!isUrl($('#WebURL').val())) {
+                        swal("Entered Web URL is not valid.");
+                        return;
+                    }
+                    var Url = {
+                        url: $('#WebURL').val()
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/CheckWebURL",
+                        data: JSON.stringify(Url),
+                        dataType: "json",
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            if (data.msg == "0") {
+                                swal("Entered Web URL is not exist.");
+                            }
+                            else {
+                                $("#hdURLId").val(data.msg);
+                                $("#section2").show();
+                                $("#section1").hide();
+                                $("#section3").hide();
+                                $("#section5").hide();
+                                $("#section4").hide();
+                            }
+                        },
+                        error: function () {
+                            alert("Error occured!!")
+                        }
+                    });
+                });
+
+                $('#btnEmailSubmit').click(function (event) {
+                    event.preventDefault();
+                    $("#otpSent").hide();
+
+                    if (!validateEmail($('#txtEmail').val())) {
+                        swal("Entered Email is not valid.");
+                        return;
+                    }
+                    if ($("#hdIsOTP").val() == "0") {
+                        var Url = {
+                            email: $('#txtEmail').val()
+                        };
+                        $.ajax({
+                            type: "POST",
+                            url: "/Home/CheckEmailExist",
+                            data: JSON.stringify(Url),
+                            dataType: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (data) {
+                                if (data.msg == "0") {
+                                    swal("Entered email is not exist.");
+                                }
+                                else {
+                                    $("#hdUserId").val(data.msg);
+                                    $("#hdIsOTP").val(1);
+                                    $("#otpSent").show();
+                                    $("#section2").show();
+                                    $("#divOTP").show();
+                                    $("#section1").hide();
+                                    $("#section3").hide();
+                                    $("#section4").hide();
+                                    $("#section5").hide();
+
+                                    var timeLeft = 120;
+                                    var elem = document.getElementById('timerDiv');
+                                    var timerId = setInterval(countdown, 1000);
+                                    function countdown() {
+                                        if (timeLeft == -1) {
+                                            clearTimeout(timerId);
+                                            $("#timerDiv").hide();
+                                            $("#resendDiv").show();
+                                        } else {
+                                            elem.innerHTML = timeLeft + ' seconds remaining to resent OTP';
+                                            timeLeft--;
+                                        }
+                                    }
+                                }
+                            },
+                            error: function () {
+                                alert("Error occured!!")
+                            }
+                        });
+                    }
+                    else {
+                        var Url = {
+                            email: $('#txtEmail').val(),
+                            OTP: $('#txtOTP').val(),
+                            urlId: $('#hdURLId').val()
+                        };
+                        $.ajax({
+                            type: "POST",
+                            url: "/Home/CheckValidOTP",
+                            data: JSON.stringify(Url),
+                            dataType: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (data) {
+                                if (data.msg == "0") {
+                                    swal("OTP is wrong. Please enter correct OTP.");
+                                }
+                                else {
+                                    $("#hdIsOTP").val(1);
+                                    $("#section2").hide();
+                                    $("#divOTP").hide();
+
+                                    $("#section1").hide();
+                                    $("#section3").show();
+                                    $("#section4").hide();
+                                    $("#section5").hide();
+                                    $("#txtTitle").val(data.msg.Title);
+                                    $("#txtMetaDescription").val(data.msg.Title);
+                                    $("#txtKeyword").val(data.msg.Keyword);
+                                    $("#txtKeyDataPoints").val(data.msg.KeyDatapoints);
+                                    $("#txtDescription").val(data.msg.Description);
+                                }
+                            },
+                            error: function () {
+                                alert("Error occured!!")
+                            }
+                        });
+                    }
+                });
+
+                $('#btnSubmit1').click(function (event) {
+                    event.preventDefault();
+                    if ($("#chkAgree").prop('checked') == false) {
+                        swal("Please agree to Terms & Condition.");
+                        return;
+                    }
+                    var Url = {
+                        emailId: $("#hdUserId").val(),
+                        urlId: $('#hdURLId').val(),
+                        title: $('#txtTitle').val(),
+                        description: $('#txtDescription').val(),
+                        metadescription: $('#txtMetaDescription').val(),
+                        keydatapoints: $('#txtKeyDataPoints').val(),
+                        keywords: $('#txtKeyword').val()
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/SubmitTicket",
+                        data: JSON.stringify(Url),
+                        dataType: "json",
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            $("#section2").hide();
+                            $("#section1").hide();
+                            $("#section3").hide();
+                            $("#section4").hide();
+                            $("#section5").show();
+                            $("#lblMessage").html(data.msg)
+                        },
+                        error: function () {
+                            alert("Error occured!!")
+                        }
+                    });
+                });
+
+                $('#btnResendOTP').click(function (event) {
+                    event.preventDefault();
+                    $("#resendDiv").hide();
+                    var Url = {
+                        emailId: $("#hdUserId").val()
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/ResendOTP",
+                        data: JSON.stringify(Url),
+                        dataType: "json",
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            swal("OTP resent Successfully.")
+                        },
+                        error: function () {
+                            alert("Error occured!!")
+                        }
+                    });
+                });
+
+                $('#tt').click(function (event) {
+                    event.preventDefault();
+                    $("#section1").hide();
+                    $("#section2").hide();
+                    $("#section3").hide();
+                    $("#section4").show();
+                    $("#section5").hide();
+                    $("#trackTicketDiv").hide();
+                    $("#txtTicketNo").val('');
+                });
+                $('#tt2').click(function (event) {
+                    event.preventDefault();
+                    $("#section1").show();
+                    $("#section2").hide();
+                    $("#section3").hide();
+                    $("#section4").hide();
+                    $("#section5").hide();
+                    $("#trackTicketDiv").show();
+                });
+                $('#tt3').click(function (event) {
+                    event.preventDefault();
+                    $("#section1").show();
+                    $("#section2").hide();
+                    $("#section3").hide();
+                    $("#section4").hide();
+                    $("#section5").hide();
+                    $("#trackTicketDiv").show();
+                });
+
+                $('#btnSubmit22').click(function (event) {
+                    event.preventDefault();
+                    if ($('#txtTicketNo').val() == "") {
+                        swal("Please enter Ticket Number.");
+                        return;
+                    }
+                    var Url = {
+                        ticket: $('#txtTicketNo').val()
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/TrackTicket",
+                        data: JSON.stringify(Url),
+                        dataType: "json",
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            console.log(data.msg);
+                            if (data.msg.length == 0) {
+                                swal("Ticket Number Not found");
+                            }
+                            else {
+                                $.each(data.msg, function (key, value) {
+                                    var date = value.CreatedDate.replace("/Date(", "").replace(")/", "");
+                                    var d = new Date(parseInt(date));
+                                    console.log(d.toLocaleString());
+                                    var row = $('<tr><td>' + value.TicketID + '</td><td>' + d.toLocaleString() + '</td><td>' + value.Status + '</td></tr>');
+                                    $('#myTable').append(row);
+                                });
+                                $("#resultDiv").show();
+                            }
+                        },
+                        error: function () {
+                            alert("Error occured!!")
+                        }
+                    });
+                });
+            });
+
+            function isUrl(s) {
+                var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@@!\-\/]))?/
+                return regexp.test(s);
+            }
+
+            const validateEmail = (email) => {
+                return String(email)
+                    .toLowerCase()
+                    .match(
+                        /^(([^<>()[\]\\.,;:\s@@"]+(\.[^<>()[\]\\.,;:\s@@"]+)*)|(".+"))@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                    );
+            };
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var url = 'http://google.com/';
+            $('#img').attr('src', 'img.php?url=' + encodeURIComponent(url));
+        });
+    </script>
+</body>
+</html>
+
