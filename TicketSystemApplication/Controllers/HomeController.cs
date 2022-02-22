@@ -28,6 +28,11 @@ namespace TicketSystemApplication.Controllers
             return View();
         }
 
+        public ActionResult Index1()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult CheckWebURL(string url)
         {
@@ -42,7 +47,8 @@ namespace TicketSystemApplication.Controllers
                 }
                 return Json(new
                 {
-                    msg = weburlId
+                    id = weburlId,
+                    msg = webURL
                 });
             }
             catch (Exception ex)
@@ -68,7 +74,7 @@ namespace TicketSystemApplication.Controllers
                     new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
-                        //sendMail22(tbEmail.Email, "OTP for Authentication", "", CreateMailBodyforEndUserOTP(tbEmail.Email, OTP));
+                        sendMail22(tbEmail.Email, "OTP for Authentication", "", CreateMailBodyforEndUserOTP(tbEmail.Email, OTP));
                     }).Start();
                 }
                 return Json(new
@@ -83,21 +89,60 @@ namespace TicketSystemApplication.Controllers
         }
 
         [HttpPost]
-        public ActionResult CheckValidOTP(string email, string OTP, string urlId)
+        public ActionResult CheckValidOTPAndSubmit(string email, string OTP, string urlId, string title, string description, string keydatapoints, string keywords, string metadescription)
         {
             try
             {
+                string result = string.Empty;
                 int Id = Convert.ToInt32(urlId);
                 TicketSystemEntities ts = new TicketSystemEntities();
                 tbglUser tbEmail = ts.tbglUsers.FirstOrDefault(x => x.Email == email && x.OTP == OTP);
                 if(tbEmail!= null)
                 {
+                    int userid = tbEmail.Id;
                     tbWebUrl webURL = ts.tbWebUrls.FirstOrDefault(x => x.Id == Id);
-                    return Json(new
+                    int newTicketNo = 0;
+                    try
                     {
-                        msg = webURL
-                        
-                    });
+                        newTicketNo = ts.tbglTickets.OrderByDescending(x => x.Id).FirstOrDefault().Id;
+                    }
+                    catch { }
+                    newTicketNo = newTicketNo + 1;
+                    if (tbEmail != null && webURL != null)
+                    {
+                        tbglTicket ticket = new tbglTicket();
+                        ticket.Createdby = userid;
+                        ticket.CreatedDate = DateTime.Now;
+                        ticket.Description = webURL.Description;
+                        ticket.KeyDataPoints = webURL.KeyDatapoints;
+                        ticket.Modifiedby = 0;
+                        ticket.Status = "Pending";
+                        ticket.WebURL = webURL.WebURL;
+                        ticket.Keywords = keywords;
+                        ticket.MetaDescription = metadescription;
+                        string ticketNo = "T-" + newTicketNo.ToString().PadLeft(5, '0');
+                        ticket.TicketID = ticketNo;
+                        ts.tbglTickets.Add(ticket);
+                        ts.SaveChanges();
+                        result = ticketNo;
+                        new Thread(() =>
+                        {
+                            Thread.CurrentThread.IsBackground = true;
+                            sendMailtoProjectUsers(tbEmail.Email, "Ticket Submitted", CreateMailBodyforTicketSubmit(tbEmail.Email, ticketNo), tbEmail.ProjectID);
+                        }).Start();
+
+                        return Json(new
+                        {
+                            msg = "Ticket is submitted successfully. Your Ticket Number is: <span style='font-size:20px; font-weight:bold;'>" + result + "</span>.<br/>Our team will contact you shortly."
+                        });
+                    }
+                    else
+                    {
+                        return Json(new
+                        {
+                            msg = 0
+                        });
+                    }
                 }
                 else
                 {
@@ -190,7 +235,7 @@ namespace TicketSystemApplication.Controllers
                     new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
-                        //sendMailtoProjectUsers(tbEmail.Email, "Ticket Submitted", CreateMailBodyforTicketSubmit(tbEmail.Email, ticketNo), tbEmail.ProjectID);
+                        sendMailtoProjectUsers(tbEmail.Email, "Ticket Submitted", CreateMailBodyforTicketSubmit(tbEmail.Email, ticketNo), tbEmail.ProjectID);
                     }).Start();
 
                     return Json(new

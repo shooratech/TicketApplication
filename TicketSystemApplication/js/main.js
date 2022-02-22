@@ -1,1 +1,26 @@
-$(function(){$("#form-total").steps({headerTag:"h2",bodyTag:"section",transitionEffect:"fade",enableAllSteps:true,autoFocus:true,transitionEffectSpeed:500,titleTemplate:'<span class="title">#title#</span>',labels:{previous:'Previous',next:'Next Step',finish:'Submit',current:''},onStepChanging:function(event,currentIndex,newIndex){var fullname=$('#first_name').val()+' '+$('#last_name').val();var phone=$('#phone').val();var email=$('#email').val();var location=$('#location').val();var date=$('#date').val();var time=$('#time').val();$('#fullname-val').text(fullname);$('#phone-val').text(phone);$('#email-val').text(email);$('#location-val').text(location);$('#date-val').text(date);$('#time-val').text(time);return true;}});$("#date").datepicker({dateFormat:"MM - DD - yy",showOn:"both",buttonText:'<i class="zmdi zmdi-chevron-down"></i>',});});
+"use strict"
+
+$(window).on("load", function() {
+    $('.btn-forget').on('click',function(e){
+        e.preventDefault();
+        var inputField = $(this).closest('form').find('input');
+        if(inputField.attr('required') && inputField.val()){
+            $('.error-message').remove();
+            $('.form-items','.form-content').addClass('hide-it');
+            $('.form-sent','.form-content').addClass('show-it');
+        }else{
+            $('.error-message').remove();
+            $('<small class="error-message">Please fill the field.</small>').insertAfter(inputField);
+        }
+
+    });
+    
+    $('.btn-tab-next').on('click',function(e){
+        e.preventDefault();
+        $('.nav-tabs .nav-item > .active').parent().next('li').find('a').trigger('click');
+    });
+    $('.custom-file input[type="file"]').on('change', function(){
+        var filename = $(this).val().split('\\').pop();
+        $(this).next().text(filename);
+    });
+});

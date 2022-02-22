@@ -1,0 +1,178 @@
+﻿
+@{
+    ViewBag.Title = "Home Page";
+}
+<input type="hidden" id="hdIsOTP" value="0" />
+<input type="hidden" id="hdUserId" value="0" />
+<input type="hidden" id="hdURLId" value="0" />
+<div id="section1" style="margin-top:100px;">
+    <div id="form-total">
+        <section>
+            <div class="inner">
+                <div class="form-row">
+                    <div class="form-holder" style="width:100%;">
+                        <input type="text" placeholder="Enter Web URL" class="form-control" id="WebURL" name="WebURL">
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+    <div class="actions clearfix">
+        <ul role="menu" aria-label="Pagination">
+            <li class="disabled" aria-disabled="true">
+                <a href="#previous" role="menuitem">Previous</a>
+            </li>
+            <li aria-hidden="true" class="disabled" aria-disabled="true" style="display: none;">
+                <a href="#next" role="menuitem">Next Step</a>
+            </li>
+            <li aria-hidden="false">
+                <a id="btnSubmit" href="javascript:void(0);" role="menuitem">Validate URL</a>
+
+            </li>
+        </ul>
+        @*Need to Track Ticket, <a href="javascript:void(0);" id="tt">Click here</a>*@
+    </div>
+</div>
+<div id="section2" style="display:none;">
+    <div id="form-total">
+        <section>
+            <div class="inner">
+                <div class="form-row">
+                    <div class="form-holder" style="width:100%;">
+                        <input type="text" placeholder="Enter Email Address" class="form-control" id="txtEmail" name="txtEmail">
+                        <span style="color:red;display:none;" id="otpSent">OTP is sent to registered Email Address.</span>
+                    </div>
+
+                </div>
+                <div class="form-row" id="divOTP" style="display:none;">
+                    <div class="form-holder" style="width:100%;">
+                        <input type="text" placeholder="Enter OTP" class="form-control" id="txtOTP" name="txtOTP">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="actions clearfix">
+        <ul role="menu" aria-label="Pagination">
+            <li class="disabled" aria-disabled="true">
+                <a href="#previous" role="menuitem">Previous</a>
+            </li>
+            <li aria-hidden="true" class="disabled" aria-disabled="true" style="display: none;">
+                <a href="#next" role="menuitem">Next Step</a>
+            </li>
+            <li aria-hidden="false">
+                <a id="btnEmailSubmit" href="javascript:void(0);" role="menuitem">Proceed</a>
+            </li>
+        </ul>
+        <div id="timerDiv"></div>
+        <div id="resendDiv" style="display:none;">
+            OTP is not received, <a href="javascript:void(0);" id="btnResendOTP">Click here to Resend</a>
+        </div>
+    </div>
+</div>
+<div id="section3" style="display:none;">
+    <div id="form-total">
+        <section>
+            <div class="inner">
+                <div class="form-row">
+                    <div class="form-holder" style="width:100%;">
+                        <label>Title</label>
+                        <input class="form-control" id="txtTitle" />
+                    </div>
+                    <div class="form-holder" style="width:100%;">
+                        <label>Meta Description</label>
+                        <input class="form-control" id="txtMetaDescription" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-holder" style="width:100%;">
+                        <label>Keyword</label>
+                        <input class="form-control" id="txtKeyword" />
+                    </div>
+                    <div class="form-holder" style="width:100%;">
+                        <label>KeyDataPoints</label>
+                        <input class="form-control" id="txtKeyDataPoints" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-holder" style="width:100%;">
+                        <label>Description</label>
+                        <textarea class="form-control" id="txtDescription"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <input type="checkbox" id="chkAgree" /> &nbsp;I agree to Terms & Condition.
+                </div>
+
+            </div>
+        </section>
+    </div>
+    <div class="actions clearfix">
+        <ul role="menu" aria-label="Pagination">
+            <li class="disabled" aria-disabled="true">
+                <a href="#previous" role="menuitem">Previous</a>
+            </li>
+            <li aria-hidden="true" class="disabled" aria-disabled="true" style="display: none;">
+                <a href="#next" role="menuitem">Next Step</a>
+            </li>
+            <li aria-hidden="false">
+                <a id="btnSubmit1" href="javascript:void(0);" role="menuitem">Submit</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="section4" style="display:none;">
+    <div id="form-total">
+        <section>
+            <div class="inner">
+                <div class="form-row">
+                    <div class="form-holder" style="width:100%;">
+                        <input type="text" placeholder="Enter Ticket No" class="form-control" id="txtTicketNo" name="txtTicketNo">
+                    </div>
+                </div>
+            </div>
+            <div id="resultDiv" style="display:none;">
+                <table id="myTable" style="width:100%;">
+                    <tr>
+                        <th>Ticket No</th>
+                        <th>Date/Time</th>
+                        <th>Status</th>
+                    </tr>
+                </table>
+            </div>
+        </section>
+    </div>
+    <div class="actions clearfix">
+        <ul role="menu" aria-label="Pagination">
+            <li class="disabled" aria-disabled="true">
+                <a href="#previous" role="menuitem">Previous</a>
+            </li>
+            <li aria-hidden="true" class="disabled" aria-disabled="true" style="display: none;">
+                <a href="#next" role="menuitem">Next Step</a>
+            </li>
+            <li aria-hidden="false">
+                <a id="btnSubmit22" href="javascript:void(0);" role="menuitem">Track</a>
+
+            </li>
+        </ul>
+        Go to Home, <a href="javascript:void(0);" id="tt2">Click here</a>
+    </div>
+</div>
+<div id="section5" style="display:none;">
+    <div id="form-total">
+        <section>
+            <div class="inner">
+                <div class="form-row">
+                    <div class="form-holder" style="width:100%;">
+                        <div id="lblMessage"></div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+    <div class="actions clearfix">
+        Go back to main section, <a href="/" id="tt3">Click here</a>
+    </div>
+</div>
